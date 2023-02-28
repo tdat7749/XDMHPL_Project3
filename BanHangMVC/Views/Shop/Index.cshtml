@@ -1,0 +1,101 @@
+﻿@using BanHangMVC.Models;
+@model List<BanHangMVC.Models.VegetableVm>;
+
+@{
+    ViewData["Title"] = "Danh Sách Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="hero-wrap hero-bread" style="background-image: url('/images/bg_1.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-controller="Home" asp-action="Index">Home</a></span> <span>Products</span></p>
+                <h1 class="mb-0 bread">Products</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 mb-5 text-center">
+                <ul id="listCategory" class="product-category">
+                    <li><a class="categoryEl" asp-action="Index" asp-controller="Shop" data-id="">Tất Cả</a></li>
+                    <li><a class="categoryEl" href="@Url.Action("Index","Shop",new {order = "best-seller"})">Bán Chạy</a></li>
+                    @foreach (var item in ViewBag.Categories)
+                    {
+                        <li><a class="categoryEl" href="@Url.Action("Index","Shop",new {catId = item.Id})">@item.Name</a></li>
+                    }
+                </ul>
+            </div>
+
+        </div>
+        <div class="mb-5 text-center">
+            <form action="@Url.Action("Index","Shop")">
+                <input type="text" name="keyword" class="form-control" placeholder="Nhập tên hoa quả hoặc là tên danh mục hoa quả" />
+                <button class="btn btn-success" ttype="submit">Tìm Kiếm</button>
+            </form>
+        </div>
+        <div class="row" id="products">
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col-md-6 col-lg-3 ftco-animate">
+                        <div class="product">
+                            <a href="@Url.Action("Index","Product",new {id = @item.VegetableId})" class="img-prod">
+                                <img class="img-fluid" src="/images/@item.Image" alt="Colorlib Template">
+                                <span class="status">0%</span>
+                                <div class="overlay"></div>
+                            </a>
+                            <div class="text py-3 pb-4 px-3 text-center">
+                                <h3><a href="@Url.Action("Index","Product",new {id = @item.VegetableId})">@item.Name</a></h3>
+                                <div class="d-flex">
+                                    <div class="pricing">
+                                        <p class="price"><span class="mr-2 price-dc">@item.Price VND</span><span class="price-sale">@item.Price VND</span></p>
+                                    </div>
+                                </div>
+                                <div class="bottom-area d-flex px-3">
+                                    <div class="m-auto d-flex">
+                                        <a href="@Url.Action("Index","Product",new {id = @item.VegetableId})" class="add-to-cart d-flex justify-content-center align-items-center text-center">
+                                            <span><i class="ion-ios-menu"></i></span>
+                                        </a>
+                                        <a href="#" class="heart d-flex justify-content-center align-items-center ">
+                                            <span><i class="ion-ios-heart"></i></span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class='justify-content-center'><h4 class="heading text-primary">Không tìm thấy sản phẩm nào </h4></div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts{
+    <script>
+        //$("a.categoryEl").each(function() {
+        //    $(this).click(function(e) {
+        //        e.preventDefault()
+        //        var id = Number($(this).data("id"))
+        //        $.ajax({
+        //            url: "/shop/index?catid="+id,
+        //            type: "GET",
+        //            success: function(data) {
+        //                console.log(data)
+        //            }
+        //        })
+        //    })
+        //})
+    </script>
+}

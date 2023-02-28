@@ -1,0 +1,171 @@
+﻿@using BanHangMVC.Models;
+@model BanHangMVC.Models.VegetableVm;
+
+
+@{
+    ViewData["Title"] = "Chi Tiết Sản Phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="hero-wrap hero-bread" style="background-image: url('images/bg_1.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Trang Chủ</a></span> <span class="mr-2"><a href="/shop">Sản Phẩm</a></span> <span>@Model.Name</span></p>
+                <h1 class="mb-0 bread">@Model.Name</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 mb-5 ftco-animate">
+                <a href="images/product-1.jpg" class="image-popup"><img src="images/@Model.Image" class="img-fluid" alt="Colorlib Template"></a>
+            </div>
+            <div class="col-lg-6 product-details pl-md-5 ftco-animate">
+                <h3>@Model.Name</h3>
+                <div class="rating d-flex">
+                    <p class="text-left mr-4">
+                        <a href="#" class="mr-2">5.0</a>
+                        <a href="#"><span class="ion-ios-star-outline"></span></a>
+                        <a href="#"><span class="ion-ios-star-outline"></span></a>
+                        <a href="#"><span class="ion-ios-star-outline"></span></a>
+                        <a href="#"><span class="ion-ios-star-outline"></span></a>
+                        <a href="#"><span class="ion-ios-star-outline"></span></a>
+                    </p>
+                    <p class="text-left mr-4">
+                        <a href="#" class="mr-2" style="color: #000;">100 <span style="color: #bbb;">Rating</span></a>
+                    </p>
+                    <p class="text-left">
+                        <a href="#" class="mr-2" style="color: #000;">@Model.Sold <span style="color: #bbb;">Sold</span></a>
+                    </p>
+                </div>
+                <p class="price"><span>@Model.Price VND </span> / @Model.Unit</p>
+                <p>
+                    A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth. Text should turn around and return to its own, safe country. But nothing the copy said could convince her and so it didn’t take long until.
+                </p>
+                <form>
+                    <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="form-group d-flex">
+                        </div>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="input-group col-md-6 d-flex mb-3">
+                        <span class="input-group-btn mr-2">
+                            <button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
+                                <i class="ion-ios-remove"></i>
+                            </button>
+                        </span>
+                        <input type="number" id="quantity" name="quantity" class="form-control input-number" value="1" min="1" max="@Model.Amount">
+                        <span class="input-group-btn ml-2">
+                            <button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
+                                <i class="ion-ios-add"></i>
+                            </button>
+                        </span>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col-md-12">
+                        <p style="color: #000;">@Model.Amount @Model.Unit available</p>
+                    </div>
+                </div>
+                <p><a id="btnCart" class="btn btn-primary text-black py-3 px-5">Thêm vào giỏ hàng</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+    <script>
+        $("#btnCart").click(function(e) {
+            e.preventDefault()
+            let cartData = JSON.parse(localStorage.getItem("detailCart"))
+            if (cartData === null) {
+                localStorage.setItem("detailCart", JSON.stringify([]))
+                cartData = []
+            }
+
+            if(Number($("#quantity").val()) > @Model.Amount){
+                alert("Không được mua số lượng vượt quá số lượng còn lại !")
+                return;
+            }
+
+            let isInCart = cartData?.find((item) => item.id === @Model.VegetableId)
+            if (isInCart === undefined) {
+                const quantity = Number($("#quantity").val())
+                const id = @Model.VegetableId
+                    const image = "@Model.Image"
+                const price = @Model.Price
+                    const subTotal = quantity * price
+                const name = "@Model.Name"
+
+                const data = {
+                    quantity,
+                    id,
+                    image,
+                    price,
+                    subTotal,
+                    name
+                }
+
+                cartData?.push(data)
+                localStorage.setItem("detailCart", JSON.stringify(cartData))
+                alert("Thêm vào giỏ hàng thành công !")
+            }
+            else {
+                const newCart = cartData?.filter((item) => {
+                    if (item.id === @Model.VegetableId) {
+                        item.quantity += Number($("#quantity").val())
+                    }
+                    return item
+                })
+                localStorage.setItem("detailCart", JSON.stringify(newCart))
+                alert("Thêm vào giỏ hàng thành công !")
+            }
+
+        })
+    </script>
+
+
+    <script>
+
+        $(document).ready(function() {
+
+            var quantitiy = 0;
+            $('.quantity-right-plus').click(function(e) {
+
+                // Stop acting like a button
+                e.preventDefault();
+                // Get the field name
+                var quantity = parseInt($('#quantity').val());
+
+                // If is not undefined
+
+                $('#quantity').val(quantity + 1);
+
+
+                // Increment
+
+            });
+
+            $('.quantity-left-minus').click(function(e) {
+                // Stop acting like a button
+                e.preventDefault();
+                // Get the field name
+                var quantity = parseInt($('#quantity').val());
+
+                // If is not undefined
+
+                // Increment
+                if (quantity > 0) {
+                    $('#quantity').val(quantity - 1);
+                }
+            });
+
+        });
+    </script>
+}

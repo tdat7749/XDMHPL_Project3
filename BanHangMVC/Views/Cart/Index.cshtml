@@ -1,0 +1,231 @@
+﻿@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var session = HttpContextAccessor.HttpContext.Session.GetString("customer");
+
+    var customer = new CustomerVm();
+    if (session != null)
+    {
+        customer = JsonConvert.DeserializeObject<CustomerVm>(session);
+    }
+}
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="hero-wrap hero-bread" style="background-image: url('images/bg_1.jpg');">
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center">
+            <div class="col-md-9 ftco-animate text-center">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Cart">Home</a></span> <span>Giỏ Hàng</span></p>
+                <h1 class="mb-0 bread">Giỏ Hàng Của @customer.NameFull</h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section ftco-cart">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 ftco-animate">
+                <div class="cart-list" id="main-cart">
+                    <table class="table">
+                        <thead class="thead-primary">
+                            <tr class="text-center">
+                                <th>&nbsp;</th>
+                                <th>Hình Ảnh</th>
+                                <th>Tên Sản Phẩm</th>
+                                <th>Giá</th>
+                                <th>Số Lượng</th>
+                                <th>Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table_cart">
+                            @*                            <tr class="text-center">
+                            <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
+
+                            <td class="image-prod"><div class="img" style="background-image:url(images/product-3.jpg);"></div></td>
+
+                            <td class="product-name">
+                            <h3>Bell Pepper</h3>
+                            <p>Far far away, behind the word mountains, far from the countries</p>
+                            </td>
+
+                            <td class="price">$4.90</td>
+
+                            <td class="quantity">
+                            <div class="input-group mb-3">
+                            <input type="text" name="quantity" class="quantity form-control input-number" value="1" min="1" max="100">
+                            </div>
+                            </td>
+
+                            <td class="total">$4.90</td>
+                            </tr><!-- END TR-->
+                            *@
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-between">
+            <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+                <div class="cart-total mb-3">
+                    <p>Nhập Địa Chỉ Giao Hàng</p>
+                    <form class="info">
+                        <div class="form-group">
+                            <label for="">Tỉnh / Thành Phố</label>
+                            <input id="city" type="text" class="form-control text-left px-3" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Xã, Huyện / Phường, Quận</label>
+                            <input id="district" type="text" class="form-control text-left px-3" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Số nhà, đường</label>
+                            <input id="apartment_number" type="text" class="form-control text-left px-3" placeholder="">
+                        </div>
+                        <div class="form-group">
+                            <label for="country">Ghi Chú</label>
+                            <textarea id="note" type="text" rows="10" class="form-control text-left px-3"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+                <div class="cart-total mb-3">
+                    <h3>Tổng Giỏ Hàng</h3>
+                    <p class="d-flex">
+                        <span>Tổng Phụ</span>
+                        <span id="subTotal">0 VND</span>
+                    </p>
+                    <p class="d-flex">
+                        <span>Vận Chuyển</span>
+                        <span>0 VND</span>
+                    </p>
+                    <p class="d-flex">
+                        <span>Giảm Giá</span>
+                        <span>0 VND</span>
+                    </p>
+                    <hr>
+                    <p class="d-flex total-price">
+                        <span>Tổng</span>
+                        <span id="total">0 VND</span>
+                    </p>
+                </div>
+                <button id="datHang" class="btn btn-primary py-3 px-4">Đặt Hàng !</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts{
+    <script>
+        $(document).ready(function() {
+            loadListCart()
+        })
+
+
+    </script>
+
+    <script>
+
+        $("#datHang").click(function(e) {
+
+            const detailCart = JSON.parse(localStorage.getItem("detailCart"))
+            if (detailCart.length <= 0) {
+                alert("Giỏ hàng của bạn đang trống, vui lòng mua sắm thêm")
+                window.location = "/cua-hang"
+                return;
+            }
+
+            if (@customer.Id == 0) {
+                alert("Vui lòng đăng nhập trước khi mua hàng !")
+                window.location = "/login"
+            }
+
+            const cart = detailCart.map((item) => {
+                let data = {
+                    VegetableID: item.id,
+                    Quantity: item.quantity,
+                    Price: item.price,
+                    SubTotal: item.subTotal
+                }
+                return data
+            })
+
+            const total = detailCart?.reduce((accumulator, currentValue) => accumulator + currentValue.subTotal, 0)
+
+            const dataBody = {
+                CustomerId: @customer.Id,
+                Total: total,
+                Note: $("#note").val(),
+                Address: $("#apartment_number").val() + ", " + $("#district").val() + ", " + $("#city").val(),
+                OrderDetails: cart
+            }
+
+            $.ajax({
+                url: "/Cart/CreateOrder",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(dataBody),
+                success: function(response) {
+                    alert(`${response.message}`)
+                    localStorage.setItem("detailCart", JSON.stringify([]))
+                    window.location = "/cua-hang"
+                },
+                error: function(xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError)
+                }
+            })
+
+        })
+    </script>
+
+    <script>
+        function removeProduct(index) {
+            let detailCart = JSON.parse(localStorage.getItem("detailCart"))
+            console.log(detailCart)
+
+            detailCart.splice(index, 1)
+
+            localStorage.setItem("detailCart", JSON.stringify(detailCart))
+            window.location = "@Url.Action("Index","Cart")"
+        }
+    </script>
+
+    <script>
+        function loadListCart() {
+            const cartDetail = JSON.parse(localStorage.getItem("detailCart"))
+            if (cartDetail.length <= 0) {
+                $("#main-cart").append("<h1 class='heading text-center'>Bạn chưa mua gì cả !<h1>"
+
+                    + "<div class='text-center'><a href='@Url.Action("index","shop")' class='btn btn-primary'>Quay lại cửa hàng</a></div>"
+                )
+            } else {
+                cartDetail?.map((item, index) => {
+                    $("#table_cart").append(`<tr class='text-center'>`
+                        + `<td class='product-remove'><p onclick='removeProduct(${index})' class='btn btn-primary'>Xóa</p></td>`
+
+                        + `<td class='image-prod'><div class='img' style='background-image:url(images/${item.image});'></div></td>`
+
+                        + `<td class='product-name'><h3><a href='/san-pham?id=${item.id}'>${item.name}</a></h3><p>Far far away, behind the word mountains, far from the countries</p></td>`
+
+                        + `<td class='price'>${item.price} VND</td>`
+
+                        + `<td class='quantity text-center'><div class='input-group mb-3'>${item.quantity}</div></td>`
+
+                        + `<td class='total'>${item.subTotal} VND</td>`
+                        + `</tr>`
+                    )
+                })
+
+                const total = cartDetail?.reduce((accumulator, currentValue) => accumulator + currentValue.subTotal, 0)
+                $("#subTotal").html(`${total} VND`)
+                $("#total").html(`${total} VND`)
+            }
+        }
+    </script>
+}
