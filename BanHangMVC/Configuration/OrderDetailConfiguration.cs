@@ -15,6 +15,8 @@ namespace BanHangMVC.Configuration
             builder.Property(x => x.SubTotal).IsRequired();
             builder.Property(x => x.Price).IsRequired();
 
+
+            builder.HasOne(x => x.Vegetable).WithMany(x => x.OrderDetails).HasForeignKey(x => x.VegetableID);
         }
     }
 }

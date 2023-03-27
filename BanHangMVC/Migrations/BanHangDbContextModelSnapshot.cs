@@ -142,6 +142,8 @@ namespace BanHangMVC.Migrations
 
                     b.HasIndex("OrderID");
 
+                    b.HasIndex("VegetableID");
+
                     b.ToTable("OrderDetails", (string)null);
                 });
 
@@ -208,7 +210,15 @@ namespace BanHangMVC.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BanHangMVC.Entities.Vegetable", "Vegetable")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("VegetableID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Order");
+
+                    b.Navigation("Vegetable");
                 });
 
             modelBuilder.Entity("BanHangMVC.Entities.Vegetable", b =>
@@ -233,6 +243,11 @@ namespace BanHangMVC.Migrations
                 });
 
             modelBuilder.Entity("BanHangMVC.Entities.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("BanHangMVC.Entities.Vegetable", b =>
                 {
                     b.Navigation("OrderDetails");
                 });

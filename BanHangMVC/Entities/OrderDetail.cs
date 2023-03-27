@@ -10,5 +10,7 @@
         public double SubTotal { get; set; }
 
         public Order Order { get; set; }
+
+        public Vegetable Vegetable { get; set; }
     }
 }

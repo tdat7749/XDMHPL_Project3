@@ -38,6 +38,7 @@ namespace BanHangMVC.Services.CustomerService
                                        where c.UserName.ToLower() == request.UserName.ToLower()
                                        select c).FirstOrDefaultAsync();
 
+
             if (checkCustomer != null)
             {
                 return false;

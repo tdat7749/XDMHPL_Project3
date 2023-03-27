@@ -16,9 +16,6 @@ namespace BanHangMVC.Configuration
             builder.Property(x => x.City).IsRequired().HasMaxLength(30);
             builder.Property(x => x.Address).IsRequired().HasMaxLength(50);
             builder.Property(x => x.FullName).IsRequired().HasMaxLength(50);
-
-
-
         }
     }
 }

@@ -8,6 +8,7 @@ namespace BanHangMVC.EF
     {
         public BanHangDbContext(DbContextOptions<BanHangDbContext> option) : base(option)
         {
+
         }
 
 

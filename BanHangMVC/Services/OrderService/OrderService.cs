@@ -45,7 +45,6 @@ namespace BanHangMVC.Services.OrderService
 
                 await _vegetableService.UpdateVegetable(listOrderDetail);
                 return await _context.SaveChangesAsync();
-
         }
 
         public async Task<List<OrderVm>> GetAllOrderById(int id)

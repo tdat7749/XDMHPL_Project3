@@ -1,4 +1,6 @@
-﻿namespace BanHangMVC.Entities
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BanHangMVC.Entities
 {
     public class Category
     {
