@@ -41,6 +41,7 @@
     <link rel="stylesheet" href="/css/flaticon.css">
     <link rel="stylesheet" href="/css/icomoon.css">
     <link rel="stylesheet" href="/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="goto-here">
     <div class="py-1 bg-primary">
@@ -84,18 +85,18 @@
                     @{
                         if (session != null)
                         {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="/#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@customer.NameFull</a>
-                                    <div class="dropdown-menu" aria-labelledby="dropdown04">
-                                        <a class="dropdown-item" asp-action="Index" asp-controller="Shop">Lịch sử mua hàng</a>
-                                        <a class="dropdown-item" href="#" id="btnDangXuat">Đăng Xuất</a>
-                                    </div>
-                                </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="/#" id="dropdown04" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@customer.NameFull</a>
+                                <div class="dropdown-menu" aria-labelledby="dropdown04">
+                                    <a class="dropdown-item" asp-action="Index" asp-controller="Shop">Lịch sử mua hàng</a>
+                                    <a class="dropdown-item" href="#" id="btnDangXuat">Đăng Xuất</a>
+                                </div>
+                            </li>
                         }
                         else
                         {
-                                <li class="nav-item"><a asp-action="Index" asp-controller="Login" class="nav-link">Đăng Nhập</a></li>
-                                <li class="nav-item"><a asp-action="Index" asp-controller="Register" class="nav-link">Đăng Ký</a></li>
+                            <li class="nav-item"><a asp-action="Index" asp-controller="Login" class="nav-link">Đăng Nhập</a></li>
+                            <li class="nav-item"><a asp-action="Index" asp-controller="Register" class="nav-link">Đăng Ký</a></li>
                         }
                     }
                     <li class="nav-item cta cta-colored"><a asp-action="Index" asp-controller="Cart" id="cart_quantity" class="nav-link"><span class='icon-shopping_cart'></span></a></li>
@@ -185,7 +186,6 @@
     <!-- loader -->
     <div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px"><circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" /><circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" /></svg></div>
 
-
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
@@ -205,17 +205,22 @@
     <script src="/js/ajaxShop.js"></script>
 
     <script>
-        $("#btnDangXuat").click(function(e){
+        $("#btnDangXuat").click(function(e) {
             $.ajax({
                 url: "@Url.Action("Logout","Login")",
                 type: "POST",
                 contentType: "application/json",
-                data:{
+                data: {
 
                 },
-                success: function(){
-                    console.log("Đăng xuất thành công !");
+                success: function() {
                     window.location = "@Url.Action("Index","Home")"
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Đăng xuất thành công !',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
                 }
             })
         })

@@ -39,7 +39,7 @@
                         <a href="#" class="mr-2" style="color: #000;">100 <span style="color: #bbb;">Rating</span></a>
                     </p>
                     <p class="text-left">
-                        <a href="#" class="mr-2" style="color: #000;">@Model.Sold <span style="color: #bbb;">Sold</span></a>
+                        <a href="#" class="mr-2" style="color: #000;">@Model.Sold <span style="color: #bbb;"> Sold</span></a>
                     </p>
                 </div>
                 <p class="price"><span>@Model.Price VND </span> / @Model.Unit</p>
@@ -90,7 +90,11 @@
             }
 
             if(Number($("#quantity").val()) > @Model.Amount){
-                alert("Không được mua số lượng vượt quá số lượng còn lại !")
+                Swal.fire({
+                    title: "Lỗi",
+                    icon : "error",
+                    text: "Không được mua số lượng vượt quá số lượng còn lại"
+                })
                 return;
             }
 
@@ -114,17 +118,28 @@
 
                 cartData?.push(data)
                 localStorage.setItem("detailCart", JSON.stringify(cartData))
-                alert("Thêm vào giỏ hàng thành công !")
+                Swal.fire({
+                    title: "Thành Công !",
+                    text: "Thêm vào giỏ hàng thành công !",
+                    icon :'success',
+                    timer: 1500
+                })
             }
             else {
                 const newCart = cartData?.filter((item) => {
                     if (item.id === @Model.VegetableId) {
                         item.quantity += Number($("#quantity").val())
+                        item.subTotal = item.price * item.quantity
                     }
                     return item
                 })
                 localStorage.setItem("detailCart", JSON.stringify(newCart))
-                alert("Thêm vào giỏ hàng thành công !")
+                Swal.fire({
+                    title: "Thành Công !",
+                    icon :'success',
+                    text: "Thêm vào giỏ hàng thành công !",
+                    timer: 1500
+                })
             }
 
         })
